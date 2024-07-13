@@ -1,0 +1,62 @@
+fragment ProfileHighlights on StackMatch {
+  profileHighlights {
+    ... on PhotoHighlight {
+      id
+      caption
+      url
+      __typename
+    }
+    __typename
+  }
+  __typename
+}
+
+fragment MinimalStackMatchFragment on StackMatch {
+  stream
+  displayStream
+  targetLikesSender
+  selfieVerifiedStatus
+  match {
+    user {
+      id
+      __typename
+    }
+    __typename
+  }
+  ...ProfileHighlights
+  __typename
+}
+
+fragment PromotedQuestionPromptFragment on PromotedQuestionPrompt {
+  promotedQuestionId
+  __typename
+}
+
+fragment MinimalStackFragment on Stack {
+  id
+  status
+  votesRemaining
+  expireTime
+  badge
+  data {
+    ...MinimalStackMatchFragment
+    ...PromotedQuestionPromptFragment
+    __typename
+  }
+  __typename
+}
+
+query WebInitialStack {
+  me {
+    id
+    stack(
+      id: JUST_FOR_YOU
+      excludedUserIds: []
+      shouldReturnStatusForSelfieVerification: true
+    ) {
+      ...MinimalStackFragment
+      __typename
+    }
+    __typename
+  }
+}

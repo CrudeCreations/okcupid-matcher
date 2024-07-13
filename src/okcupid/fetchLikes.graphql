@@ -1,0 +1,86 @@
+fragment UserFragment on User {
+  id
+  joinDate
+  notificationCounts {
+    likesIncoming
+    __typename
+  }
+  __typename
+}
+
+fragment UserBlurredImage on User {
+  primaryImageBlurred {
+    square225
+    __typename
+  }
+  __typename
+}
+
+fragment UserPrimaryImagesFragment on User {
+  primaryImage {
+    id
+    caption
+    original
+    square60
+    square82
+    square100
+    square120
+    square160
+    square225
+    square400
+    square800
+    __typename
+  }
+  __typename
+}
+
+fragment UserrowMatchFragment on Match {
+  matchPercent
+  senderLikeTime
+  senderLikes
+  senderVote
+  targetLikeTime
+  targetVote
+  likeTime
+  senderMessageTime
+  targetMessageTime
+  targetLikeViaSpotlight
+  targetLikeViaSuperBoost
+  senderPassed
+  firstMessage {
+    text
+    __typename
+  }
+  user {
+    id
+    username
+    displayname
+    age
+    isOnline
+    userLocation {
+      id
+      publicName
+      __typename
+    }
+    ...UserPrimaryImagesFragment
+    ...UserBlurredImage
+    __typename
+  }
+  __typename
+}
+
+query userrowsIncomingLikes($after: String, $sort: LikesListSort) {
+  me {
+    ...UserFragment
+    id
+    likes: likesIncomingWithPreviews(after: $after, sort: $sort) {
+      data {
+        ... on UserListResult {
+          ...UserrowMatchFragment
+        }
+        __typename
+      }
+    }
+    __typename
+  }
+}
